@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace PioPioBlazor.Models
 {
@@ -23,5 +24,7 @@ namespace PioPioBlazor.Models
         public string ImageAlt { get; set; } = string.Empty;
 
         public string UserProfileUrl { get; set; } = string.Empty;
+
+        public IEnumerable<string> HashTags { get; set; }
     }
 }

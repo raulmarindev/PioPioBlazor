@@ -1,0 +1,176 @@
+﻿@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Web
+
+@typeparam TItem
+@inject IJSRuntime JsRuntime
+
+<div class="uic-tag-selector @Style.SelectorClass @(_selectionOpen ? "uic-tag-selector--open" : "")">
+    <div class="uic-tag-selector__box">
+        @if (SelectedTags != null)
+        {
+            foreach (var item in SelectedTags)
+            {
+                <span class="@Style.SelectedTagClass">
+                    @TagTemplate(item)
+                    <span class="@Style.RemoveTagClass" @onclick="@(() => RemoveSelectedTag(item))">
+                        <svg class="fill-current text-white-500 inline-block h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 492 492" xml:space="preserve"><path d="M300.188,246L484.14,62.04c5.06-5.064,7.852-11.82,7.86-19.024c0-7.208-2.792-13.972-7.86-19.028L468.02,7.872
+			c-5.068-5.076-11.824-7.856-19.036-7.856c-7.2,0-13.956,2.78-19.024,7.856L246.008,191.82L62.048,7.872
+			c-5.06-5.076-11.82-7.856-19.028-7.856c-7.2,0-13.96,2.78-19.02,7.856L7.872,23.988c-10.496,10.496-10.496,27.568,0,38.052
+			L191.828,246L7.872,429.952c-5.064,5.072-7.852,11.828-7.852,19.032c0,7.204,2.788,13.96,7.852,19.028l16.124,16.116
+			c5.06,5.072,11.824,7.856,19.02,7.856c7.208,0,13.968-2.784,19.028-7.856l183.96-183.952l183.952,183.952
+			c5.068,5.072,11.824,7.856,19.024,7.856h0.008c7.204,0,13.96-2.784,19.028-7.856l16.12-16.116
+			c5.06-5.064,7.852-11.824,7.852-19.028c0-7.204-2.792-13.96-7.852-19.028L300.188,246z" /></svg>
+                    </span>
+                </span>
+            }
+        }
+        <input type="text" @onfocus="@OpenSelection" @onblur="@CloseSelection" @onkeyup="@OnTextKeypress" @ref="TextBox" placeholder="@Placeholder" />
+    </div>
+
+    @if (_selectableItems.Any())
+    {
+        <div class="uic-tag-selector__dropdown @Style.DropdownClass">
+
+            @foreach (var item in _selectableItems)
+            {
+                <div class="@Style.DropdownItemClass @(_selectableItems.IndexOf(item) == _selectableIndex ? "uic-tag-selector__item--selected " + Style.DropdownItemHoverClass : "")" @onmousedown="@(() => AddSelectedTag(item, true))">
+                    @TagTemplate(item)
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public string Placeholder
+    {
+        get
+        {
+            return (SelectableTags != null && SelectableTags.Any()) ? string.Empty : _placeholder;
+        }
+        set
+        {
+            _placeholder = value;
+        }
+    }
+
+    private string _placeholder;
+
+    [Parameter] public IEnumerable<TItem> SelectableTags { get; set; }
+
+    [Parameter] public IList<TItem> SelectedTags { get; set; } = new List<TItem>();
+    [Parameter] public EventCallback<IList<TItem>> SelectedTagsChanged { get; set; }
+
+    [Parameter] public TagSelectorStyle Style { get; set; } = TagSelectorStyle.TailwindCss;
+
+    [Parameter] public RenderFragment<TItem> TagTemplate { get; set; }
+
+    [Parameter] public Func<TItem, string, bool> Filter { get; set; }
+
+    [Parameter] public EventCallback<TItem> OnTagSelected { get; set; }
+
+    [Parameter] public EventCallback<TItem> OnTagRemoved { get; set; }
+
+    [Parameter] public EventCallback<string> OnCreateTag { get; set; }
+
+    private bool _selectionOpen;
+    private string _filterText;
+    private ElementReference TextBox;
+    private int _selectableIndex = 0;
+    private IList<TItem> _selectableItems = new List<TItem>();
+
+    private void AddSelectedTag(TItem item, bool closeSelection)
+    {
+        SelectedTags.Add(item);
+        ResetFilterText();
+        UpdateSelectableItems();
+        _selectionOpen = !closeSelection;
+        OnTagSelected.InvokeAsync(item);
+        SelectedTagsChanged.InvokeAsync(SelectedTags);
+    }
+
+    private void RemoveSelectedTag(TItem item)
+    {
+        SelectedTags.Remove(item);
+        OnTagRemoved.InvokeAsync(item);
+        SelectedTagsChanged.InvokeAsync(SelectedTags);
+    }
+
+    private void OpenSelection()
+    {
+        UpdateSelectableItems();
+        _selectableIndex = 0;
+        _selectionOpen = true;
+    }
+
+    private void CloseSelection()
+    {
+        _selectionOpen = false;
+    }
+
+    private void ResetFilterText()
+    {
+        _filterText = "";
+        JsRuntime.InvokeAsync<object>("tagSelectorComponent.setValue", TextBox, "");
+    }
+
+    private async Task OnTextKeypress(KeyboardEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case "ArrowUp":
+                _selectableIndex--;
+                break;
+
+            case "ArrowDown":
+                _selectableIndex++;
+                break;
+
+            case "Enter":
+                if (_selectableItems.Any())
+                {
+                    AddSelectedTag(_selectableItems[_selectableIndex], false);
+                }
+                else if (!string.IsNullOrEmpty(_filterText))
+                {
+                    if (OnCreateTag.HasDelegate)
+                    {
+                        await OnCreateTag.InvokeAsync(_filterText);
+
+                        ResetFilterText();
+                    }
+                }
+                break;
+
+            case "Escape":
+                await JsRuntime.InvokeAsync<object>("tagSelectorComponent.blur", TextBox);
+                break;
+
+            default:
+                _filterText = await JsRuntime.InvokeAsync<string>("tagSelectorComponent.getValue", TextBox);
+                UpdateSelectableItems();
+                break;
+        }
+
+        // check selectable index bounds
+        if (_selectableIndex < 0)
+        {
+            _selectableIndex = _selectableItems.Count - 1;
+        }
+        else if (_selectableIndex >= _selectableItems.Count)
+        {
+            _selectableIndex = 0;
+        }
+    }
+
+    private void UpdateSelectableItems()
+    {
+        _selectableItems = (SelectableTags ?? _selectableItems)
+            .Except(SelectedTags)
+            .Where(item => Filter == null || string.IsNullOrEmpty(_filterText) || Filter(item, _filterText))
+            .ToList();
+    }
+
+}
