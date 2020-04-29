@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "tailwindcss": "^1.3.5"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.6",
+    "css-loader": "^3.5.3",
+    "fs": "^0.0.1-security",
+    "mini-css-extract-plugin": "^0.9.0",
+    "on-build-webpack": "^0.1.0",
+    "postcss-import": "^12.0.1",
+    "postcss-loader": "^3.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "webpack": "^5.0.0-beta.15",
+    "webpack-cli": "^3.3.11"
+  },
+  "scripts": {
+    "webpackdev": "webpack --config webpack.dev.config.js",
+    "webpackprod": "webpack --config webpack.prod.config.js"
+  },
+  "name": "pio-pio",
+  "private": true,
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/raulmarindev/PioPioBlazor.git",
+  "author": "Raúl Marín <rmarin82@gmail.com>",
+  "license": "MIT"
+}
