@@ -3,11 +3,11 @@
 @using PioPioBlazor.Services
 @inject TwitterService TwitterService
 
-<h1>Hello, world!</h1>
-
 @if (_tweets == null)
 {
-    <p><em>Loading...</em></p>
+    <div class="lds-facebook mx-auto">
+        <div class="bg-blue-300"></div><div class="bg-blue-300"></div><div class="bg-blue-300"></div>
+    </div>
 }
 else
 {
@@ -18,11 +18,18 @@ else
         <Tweet State="@tweet" />
     }
 }
+
 @code {
     private IEnumerable<Models.Tweet> _tweets;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _tweets = await TwitterService.GetHomeTimelineTweets();
+        if (firstRender)
+        {
+            // When execution reaches this point, the first *interactive* render
+            // is complete. The component has an active connection to the browser.
+            _tweets = await TwitterService.GetHomeTimelineTweets();
+            StateHasChanged();
+        }
     }
 }
