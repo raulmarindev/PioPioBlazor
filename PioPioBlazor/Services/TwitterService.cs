@@ -85,7 +85,7 @@ namespace PioPioBlazor.Services
                             var hashTags = new List<string>();
                             if (hashTagEntities != null && hashTagEntities.Any())
                             {
-                                hashTags.AddRange(hashTagEntities.Select(e => e.Text));
+                                hashTags.AddRange(hashTagEntities.Select(e => $"#{e.Text}"));
                             }
 
                             return new Tweet
