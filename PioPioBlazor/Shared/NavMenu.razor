@@ -1,8 +1,18 @@
-﻿<header>
-    <nav class="flex items-center justify-between flex-wrap bg-blue-300 p-6">
+﻿@inject NavigationManager NavigationManager
+
+<header>
+    <nav class="flex items-center justify-between flex-wrap bg-blue-300 p-6 cursor-pointer" @onclick="NavigateToIndexComponent">
         <div class="flex items-center flex-shrink-0 text-white mr-6">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="w-8 mr-4"><text y=".9em" font-size="90">🐔</text></svg>
             <span class="font-semibold text-xl tracking-tight">Pío Pío</span>
         </div>
     </nav>
 </header>
+
+@code {
+
+    private void NavigateToIndexComponent()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}
