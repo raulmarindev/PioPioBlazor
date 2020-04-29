@@ -4,6 +4,7 @@ const Path = require('path');
 module.exports = {
     mode: 'development',
     entry: {
+        interop: './js/interop.js',
         site: './css/site.css',
     },
     output: {
