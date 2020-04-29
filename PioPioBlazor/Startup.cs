@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PioPioBlazor.Data;
+using PioPioBlazor.Services;
 
 namespace PioPioBlazor
 {
@@ -22,7 +22,7 @@ namespace PioPioBlazor
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<TwitterService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
