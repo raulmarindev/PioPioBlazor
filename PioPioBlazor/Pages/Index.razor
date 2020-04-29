@@ -1,7 +1,28 @@
 ﻿@page "/"
 
+@using PioPioBlazor.Services
+@inject TwitterService TwitterService
+
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+@if (_tweets == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <TweetTagFilter />
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    @foreach (var tweet in _tweets)
+    {
+        <Tweet State="@tweet" />
+    }
+}
+@code {
+    private IEnumerable<Models.Tweet> _tweets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _tweets = await TwitterService.GetHomeTimelineTweets();
+    }
+}
