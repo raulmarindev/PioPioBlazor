@@ -39,7 +39,7 @@ namespace PioPioBlazor.Services
 
         public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets()
         {
-            const int MaxTotalResults = 10;
+            const int MaxTotalResults = 20;
 
             // sinceID is the oldest id you already have for this search term
             // CurrentMaxId is used after the first query to track current session
@@ -81,6 +81,12 @@ namespace PioPioBlazor.Services
                         .Select(s =>
                         {
                             var mediaEntities = s.Entities.MediaEntities;
+                            var hashTagEntities = s.Entities.HashTagEntities;
+                            var hashTags = new List<string>();
+                            if (hashTagEntities != null && hashTagEntities.Any())
+                            {
+                                hashTags.AddRange(hashTagEntities.Select(e => e.Text));
+                            }
 
                             return new Tweet
                             {
@@ -93,7 +99,8 @@ namespace PioPioBlazor.Services
                                 UserProfileImageUrl = s.User.ProfileImageUrl.Replace("http:", "https:"),
                                 ImageUrl = mediaEntities.Any() ? mediaEntities[0].MediaUrl.Replace("http:", "https:") : "/images/twitter-logo.svg",
                                 ImageAlt = mediaEntities.Any() ? mediaEntities[0].AltText : string.Empty,
-                                UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}"
+                                UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}",
+                                HashTags = hashTags
                             };
                         });
         }
