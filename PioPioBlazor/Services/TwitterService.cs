@@ -113,7 +113,7 @@ namespace PioPioBlazor.Services
                                 HashTags = hashTags,
                                 ImageAlt = mediaEntities.Any() ? mediaEntities[0].AltText : string.Empty,
                                 ImageUrl = mediaEntities.Any() ? mediaEntities[0].MediaUrl.Replace("http:", "https:") : userProfileImageUrl,
-                                Language = s.Lang,
+                                Language = s.Lang.ToLower(),
                                 RetweetCount = s.RetweetCount,
                                 Text = $"{s.Text.Substring(0, Math.Min(TweetTextMaxLength, s.Text.Length))}{(s.Text.Length > TweetTextMaxLength ? "..." : string.Empty)}",
                                 Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
