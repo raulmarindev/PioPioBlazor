@@ -26,5 +26,7 @@ namespace PioPioBlazor.Models
         public string UserProfileUrl { get; set; } = string.Empty;
 
         public IEnumerable<string> HashTags { get; set; }
+
+        public string Language { get; set; }
     }
 }
