@@ -460,3 +460,5 @@ MigrationBackup/
 
 # Yarn files
 .yarn/
+.pnp.js
+PioPioBlazor/.pnp.js
