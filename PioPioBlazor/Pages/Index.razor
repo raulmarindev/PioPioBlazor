@@ -18,7 +18,7 @@ else
     <TagSelector TItem="string"
                  SelectableTags="_hashTags"
                  @bind-SelectedTags="SelectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
-                 Placeholder="Select tags to filter by..."
+                 Placeholder="Select hashtags to filter by..."
                  OnCreateTag="HandleCreateTag"
                  OnTagSelected="HandleSelectedTagsChange"
                  OnTagRemoved="HandleSelectedTagsChange">
