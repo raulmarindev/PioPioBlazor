@@ -6,6 +6,7 @@ using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LinqToTwitter;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using PioPioBlazor.Models;
 
@@ -15,11 +16,14 @@ namespace PioPioBlazor.Services
     {
         private const int TweetTextMaxLength = 100;
         private readonly IConfiguration _configuration;
+        private readonly IMemoryCache _memoryCache;
         private TwitterContext _twitterContext;
+        private Guid UserId = Guid.NewGuid();
 
-        public TwitterService(IConfiguration configuration)
+        public TwitterService(IConfiguration configuration, IMemoryCache memoryCache)
         {
             _configuration = configuration;
+            _memoryCache = memoryCache;
             _twitterContext = new TwitterContext(CreateMvcAuthorizer());
         }
 
@@ -39,7 +43,20 @@ namespace PioPioBlazor.Services
 
         public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets()
         {
-            const int MaxTotalResults = 20;
+            return await _memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(UserId, async e =>
+            {
+                e.SetOptions(new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
+                });
+
+                return await FetchHomeTimelineTweets();
+            });
+        }
+
+        private async Task<IEnumerable<Tweet>> FetchHomeTimelineTweets()
+        {
+            const int MaxTotalResults = 150;
 
             // sinceID is the oldest id you already have for this search term
             // CurrentMaxId is used after the first query to track current session
@@ -87,20 +104,22 @@ namespace PioPioBlazor.Services
                             {
                                 hashTags.AddRange(hashTagEntities.Select(e => $"#{e.Text}"));
                             }
+                            var userProfileImageUrl = s.User.ProfileImageUrl.Replace("http:", "https:");
 
                             return new Tweet
                             {
-                                FavoriteCount = s.FavoriteCount,
-                                Text = $"{s.Text.Substring(0, Math.Min(TweetTextMaxLength, s.Text.Length))}{(s.Text.Length > TweetTextMaxLength ? "..." : string.Empty)}",
-                                UserScreenName = s.User.ScreenNameResponse,
-                                Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
                                 CreatedAt = s.CreatedAt,
-                                RetweetCount = s.RetweetCount,
-                                UserProfileImageUrl = s.User.ProfileImageUrl.Replace("http:", "https:"),
-                                ImageUrl = mediaEntities.Any() ? mediaEntities[0].MediaUrl.Replace("http:", "https:") : "/images/twitter-logo.svg",
+                                FavoriteCount = s.FavoriteCount,
+                                HashTags = hashTags,
                                 ImageAlt = mediaEntities.Any() ? mediaEntities[0].AltText : string.Empty,
+                                ImageUrl = mediaEntities.Any() ? mediaEntities[0].MediaUrl.Replace("http:", "https:") : userProfileImageUrl,
+                                Language = s.Lang,
+                                RetweetCount = s.RetweetCount,
+                                Text = $"{s.Text.Substring(0, Math.Min(TweetTextMaxLength, s.Text.Length))}{(s.Text.Length > TweetTextMaxLength ? "..." : string.Empty)}",
+                                Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
+                                UserProfileImageUrl = userProfileImageUrl,
                                 UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}",
-                                HashTags = hashTags
+                                UserScreenName = s.User.ScreenNameResponse,
                             };
                         });
         }
