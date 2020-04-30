@@ -20,6 +20,8 @@ namespace PioPioBlazor
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddResponseCompression();
+            services.AddResponseCaching();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<TwitterService>();
@@ -28,6 +30,8 @@ namespace PioPioBlazor
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseResponseCompression();
+            app.UseResponseCaching();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
