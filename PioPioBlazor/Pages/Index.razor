@@ -63,7 +63,7 @@ else
             _filteredTweets = new List<Models.Tweet>
                 (_tweets);
             _hashTags = _tweets.SelectMany(t => t.HashTags).OrderBy(t => t);
-            _languages = _tweets.Select(t => t.Language).OrderBy(t => t);
+            _languages = _tweets.Select(t => Models.Tweet.Languages[t.Language]).OrderBy(t => t);
             StateHasChanged();
         }
     }
@@ -105,7 +105,7 @@ else
         if (SelectedLanguages.Count > 0)
         {
             _filteredTweets = new List<Models.Tweet>
-                (_tweets.Where(t => SelectedLanguages.Contains(t.Language)));
+                (_tweets.Where(t => SelectedLanguages.Contains(Models.Tweet.Languages[t.Language])));
         }
         else
         {
