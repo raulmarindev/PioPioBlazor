@@ -15,9 +15,27 @@ else if (_tweets.Count() == 0)
 }
 else
 {
-    <TagSelector TItem="string" SelectableTags="_hashTags" @bind-SelectedTags="Selected" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))" Placeholder="Select tags to filter by..." OnCreateTag="HandleCreateTag" OnTagSelected="HandleSelectedTagsChange" OnTagRemoved="HandleSelectedTagsChange">
+    <TagSelector TItem="string"
+                 SelectableTags="_hashTags"
+                 @bind-SelectedTags="SelectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                 Placeholder="Select tags to filter by..."
+                 OnCreateTag="HandleCreateTag"
+                 OnTagSelected="HandleSelectedTagsChange"
+                 OnTagRemoved="HandleSelectedTagsChange">
         <TagTemplate>@context</TagTemplate>
     </TagSelector>
+
+    <TagSelector TItem="string"
+                 SelectableTags="_languages"
+                 @bind-SelectedTags="SelectedLanguages" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                 Placeholder="Select languages to filter by..."
+                 OnCreateTag="HandleCreateLanguageTag"
+                 OnTagSelected="HandleSelectedLanguagesChange"
+                 OnTagRemoved="HandleSelectedLanguagesChange">
+        <TagTemplate>@context</TagTemplate>
+    </TagSelector>
+
+    <h2 class="mb-8">@_filteredTweets.Count() tweets retrieved</h2>
 
     @foreach (var tweet in _filteredTweets)
     {
@@ -32,6 +50,8 @@ else
         _filteredTweets;
     private IEnumerable<string>
         _hashTags;
+    private IEnumerable<string>
+        _languages;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -42,26 +62,27 @@ else
             _tweets = await TwitterService.GetHomeTimelineTweets();
             _filteredTweets = new List<Models.Tweet>
                 (_tweets);
-            _hashTags = _tweets.SelectMany(t => t.HashTags);
+            _hashTags = _tweets.SelectMany(t => t.HashTags).OrderBy(t => t);
+            _languages = _tweets.Select(t => t.Language).OrderBy(t => t);
             StateHasChanged();
         }
     }
 
     IList<string>
-        Selected = new List<string>
+        SelectedHashTags = new List<string>
             ();
 
     void HandleCreateTag(string tag)
     {
-        Selected.Add(tag);
+        SelectedHashTags.Add(tag);
     }
 
     void HandleSelectedTagsChange(string tag)
     {
-        if (Selected.Count > 0)
+        if (SelectedHashTags.Count > 0)
         {
             _filteredTweets = new List<Models.Tweet>
-                (_tweets.Where(t => t.HashTags.Intersect(Selected).Any()));
+                (_tweets.Where(t => t.HashTags.Intersect(SelectedHashTags).Any()));
         }
         else
         {
@@ -69,4 +90,28 @@ else
                 (_tweets);
         }
     }
+
+    IList<string>
+        SelectedLanguages = new List<string>
+            ();
+
+    void HandleCreateLanguageTag(string tag)
+    {
+        SelectedLanguages.Add(tag);
+    }
+
+    void HandleSelectedLanguagesChange(string tag)
+    {
+        if (SelectedLanguages.Count > 0)
+        {
+            _filteredTweets = new List<Models.Tweet>
+                (_tweets.Where(t => SelectedLanguages.Contains(t.Language)));
+        }
+        else
+        {
+            _filteredTweets = new List<Models.Tweet>
+                (_tweets);
+        }
+    }
+
 }
