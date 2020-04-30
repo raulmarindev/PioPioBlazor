@@ -56,7 +56,7 @@ namespace PioPioBlazor.Services
 
         private async Task<IEnumerable<Tweet>> FetchHomeTimelineTweets()
         {
-            const int MaxTotalResults = 150;
+            const int MaxTotalResults = 800;
 
             // sinceID is the oldest id you already have for this search term
             // CurrentMaxId is used after the first query to track current session
@@ -64,6 +64,7 @@ namespace PioPioBlazor.Services
             var partialStatuses = new List<Status>();
             var combinedStatuses = new List<Status>();
             const int MinFavoriteCount = 20;
+            int retrievedTweetsCount = 0;
 
             do
             {
@@ -79,6 +80,7 @@ namespace PioPioBlazor.Services
                     Debug.Assert(currentMaxID < previousMaxID);
 
                     previousMaxID = currentMaxID;
+                    retrievedTweetsCount += partialStatuses.Count();
 
                     combinedStatuses.AddRange(partialStatuses.Where(s => s.FavoriteCount > MinFavoriteCount));
                 }
@@ -86,7 +88,7 @@ namespace PioPioBlazor.Services
                 {
                     Console.WriteLine(ex.Message);
                 }
-            } while (partialStatuses.Any() && (combinedStatuses.Count() < MaxTotalResults));
+            } while (partialStatuses.Any() && (retrievedTweetsCount < MaxTotalResults));
 
             return MapStatusesToTweets(combinedStatuses);
         }
