@@ -169,6 +169,7 @@ Project Link: [https://github.com/raulmarindev/PioPioBlazor](https://github.com/
 * [css-loader](https://webpack.js.org/loaders/css-loader/)
 * [cssnano](https://cssnano.co/)
 * [Visual Studio 2019](https://visualstudio.microsoft.com/vs/)
+* [Azure App Service](https://azure.microsoft.com/en-us/services/app-service/)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
