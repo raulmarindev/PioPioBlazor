@@ -41,14 +41,26 @@ namespace PioPioBlazor.Services
             };
         }
 
-        public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets(bool forceFetch = false)
+        public IEnumerable<Tweet> GetHomeTimelineTweets(int quantity)
+        {
+            var tweets = _memoryCache.Get<IEnumerable<Tweet>>(UserId);
+
+            if (tweets == null)
+            {
+                return new List<Tweet>();
+            }
+
+            return tweets.Take(quantity);
+        }
+
+        public async Task<int> PreloadHomeTimelineTweets(bool forceFetch = false)
         {
             if (forceFetch)
             {
                 _memoryCache.Remove(UserId);
             }
 
-            return await _memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(UserId, async e =>
+            var tweets = await (_memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(UserId, async e =>
             {
                 e.SetOptions(new MemoryCacheEntryOptions
                 {
@@ -56,7 +68,9 @@ namespace PioPioBlazor.Services
                 });
 
                 return await FetchHomeTimelineTweets();
-            });
+            }));
+
+            return tweets.Count();
         }
 
         private async Task<IEnumerable<Tweet>> FetchHomeTimelineTweets()
