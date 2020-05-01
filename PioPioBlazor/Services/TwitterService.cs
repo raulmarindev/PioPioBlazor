@@ -41,8 +41,13 @@ namespace PioPioBlazor.Services
             };
         }
 
-        public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets()
+        public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets(bool forceFetch = false)
         {
+            if (forceFetch)
+            {
+                _memoryCache.Remove(UserId);
+            }
+
             return await _memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(UserId, async e =>
             {
                 e.SetOptions(new MemoryCacheEntryOptions
