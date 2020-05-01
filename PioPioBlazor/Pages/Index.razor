@@ -6,12 +6,15 @@
 @if (_tweets == null)
 {
     <div class="lds-facebook mx-auto">
-        <div class="bg-blue-300"></div><div class="bg-blue-300"></div><div class="bg-blue-300"></div>
+        <div class="bg-blue-400"></div><div class="bg-blue-400"></div><div class="bg-blue-400"></div>
     </div>
 }
 else if (_tweets.Count() == 0)
 {
-    <h2>You have reached the Twitter request limit. Please, try again in 10 - 15 minutes.</h2>
+    <h2 class="mb-10">You have reached the Twitter request limit. Please, try again in 10 - 15 minutes.</h2>
+    <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => {_retry = true;}">
+        Try Again
+    </button>
 }
 else
 {
@@ -37,16 +40,26 @@ else
 
     <h2 class="mb-8">@_filteredTweets.Count() tweets retrieved</h2>
 
-    @foreach (var tweet in _filteredTweets)
+    int i;
+    @for (i = 0; i < _filteredTweets.Count() && i < _numberOfTweetsShown; i++)
     {
-        <Tweet State="@tweet" />
+        <Tweet State="@_filteredTweets[i]" />
+    }
+
+    if (i < _filteredTweets.Count())
+    {
+        <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => {_numberOfTweetsShown += 10;}">
+            Load More Tweets
+        </button>
     }
 }
 
 @code {
+    private int _numberOfTweetsShown = 10;
+    private bool _retry = false;
     private IEnumerable<Models.Tweet>
     _tweets;
-    private IEnumerable<Models.Tweet>
+    private List<Models.Tweet>
         _filteredTweets;
     private IEnumerable<string>
         _hashTags;
@@ -55,15 +68,16 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
+        if (firstRender || _retry)
         {
             // When execution reaches this point, the first *interactive* render
             // is complete. The component has an active connection to the browser.
-            _tweets = await TwitterService.GetHomeTimelineTweets();
+            _tweets = await TwitterService.GetHomeTimelineTweets(_retry);
             _filteredTweets = new List<Models.Tweet>
                 (_tweets);
             _hashTags = _tweets.SelectMany(t => t.HashTags).OrderBy(t => t);
             _languages = _tweets.Select(t => Models.Tweet.Languages[t.Language]).OrderBy(t => t);
+            _retry = false;
             StateHasChanged();
         }
     }
