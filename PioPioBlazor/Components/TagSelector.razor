@@ -10,9 +10,9 @@
         {
             foreach (var item in SelectedTags)
             {
-                <span class="@Style.SelectedTagClass">
+                <span class="@Style.SelectedTagClass" @onclick="@(() => RemoveSelectedTag(item))">
                     @TagTemplate(item)
-                    <span class="@Style.RemoveTagClass" @onclick="@(() => RemoveSelectedTag(item))">🗙</span>
+                    <span class="@Style.RemoveTagClass"><bold>X</bold></span>
                 </span>
             }
         }
