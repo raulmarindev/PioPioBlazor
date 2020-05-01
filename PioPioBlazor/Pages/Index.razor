@@ -38,7 +38,7 @@ else
         <TagTemplate>@context</TagTemplate>
     </TagSelector>
 
-    <h2 class="mb-8">@_numberOfTweetsPreloaded tweets retrieved</h2>
+    <h2 class="mb-8">@_filteredTweets.Count() tweets retrieved</h2>
 
     int i;
     @for (i = 0; i < _filteredTweets.Count() && i < _numberOfTweetsShown; i++)
@@ -46,9 +46,9 @@ else
         <Tweet State="@_filteredTweets[i]" />
     }
 
-    if (i < _numberOfTweetsPreloaded)
+    if (i < _filteredTweets.Count())
     {
-        <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => {_numberOfTweetsShown += 10; _loadMoreTweets = true; }">
+        <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => {_numberOfTweetsShown += 10;}">
             Load More Tweets
         </button>
     }
@@ -56,9 +56,7 @@ else
 
 @code {
     private int _numberOfTweetsShown = 10;
-    private int _numberOfTweetsPreloaded = 0;
     private bool _retry = false;
-    private bool _loadMoreTweets = false;
     private IEnumerable<Models.Tweet>
     _tweets;
     private List<Models.Tweet>
@@ -70,18 +68,16 @@ else
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender || _retry || _loadMoreTweets)
+        if (firstRender || _retry)
         {
             // When execution reaches this point, the first *interactive* render
             // is complete. The component has an active connection to the browser.
-            _numberOfTweetsPreloaded = await TwitterService.PreloadHomeTimelineTweets(_retry);
-            _tweets = TwitterService.GetHomeTimelineTweets(_numberOfTweetsShown);
+            _tweets = await TwitterService.GetHomeTimelineTweets(_retry);
             _filteredTweets = new List<Models.Tweet>
                 (_tweets);
             _hashTags = _tweets.SelectMany(t => t.HashTags).OrderBy(t => t);
             _languages = _tweets.Select(t => Models.Tweet.Languages[t.Language]).OrderBy(t => t);
             _retry = false;
-            _loadMoreTweets = false;
             StateHasChanged();
         }
     }
