@@ -3,7 +3,7 @@
 
 @inject IJSRuntime JsRuntime
 
-<input class="@Style.SearchBoxClass" type="text" placeholder="@Placeholder" @oninput="(ChangeEventArgs args) => ChangeSearchTearm(args.Value.ToString())" />
+<input class="@Style.SearchBoxClass" type="search" placeholder="@Placeholder" @oninput="(ChangeEventArgs args) => ChangeSearchTearm(args.Value.ToString())" />
 
 @code {
 
