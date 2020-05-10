@@ -20,8 +20,8 @@ else
 {
     <TagSelector TItem="string"
                  SelectableTags="_hashTags"
-                 @bind-SelectedTags="SelectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
-                 Placeholder="Select hashtags to filter by..."
+                 @bind-SelectedTags="_selectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                 Placeholder="Select hashtags to filter your tweets..."
                  OnCreateTag="HandleCreateTag"
                  OnTagSelected="HandleSelectedTagsChange"
                  OnTagRemoved="HandleSelectedTagsChange">
@@ -30,13 +30,15 @@ else
 
     <TagSelector TItem="string"
                  SelectableTags="_languages"
-                 @bind-SelectedTags="SelectedLanguages" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
-                 Placeholder="Select languages to filter by..."
+                 @bind-SelectedTags="_selectedLanguages" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                 Placeholder="Select languages to filter your tweets..."
                  OnCreateTag="HandleCreateLanguageTag"
-                 OnTagSelected="HandleSelectedLanguagesChange"
-                 OnTagRemoved="HandleSelectedLanguagesChange">
+                 OnTagSelected="HandleSelectedTagsChange"
+                 OnTagRemoved="HandleSelectedTagsChange">
         <TagTemplate>@context</TagTemplate>
     </TagSelector>
+
+    <SearchBox Placeholder="Search among your Home Timeline tweets..." SearchTerm="_searchTerm" SearchTermChanged="HandleTextChange" />
 
     <h2 class="mb-8">@_filteredTweets.Count() tweets retrieved</h2>
 
@@ -65,6 +67,7 @@ else
         _hashTags;
     private IEnumerable<string>
         _languages;
+    private string _searchTerm;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -82,50 +85,56 @@ else
         }
     }
 
-    IList<string>
-        SelectedHashTags = new List<string>
+    private IList<string>
+        _selectedHashTags = new List<string>
             ();
 
     void HandleCreateTag(string tag)
     {
-        SelectedHashTags.Add(tag);
+        _selectedHashTags.Add(tag);
+    }
+
+    void HandleTextChange(string searchTerm)
+    {
+        _searchTerm = searchTerm;
+        _filteredTweets = FilterTweetsBySelectedTags().ToList();
+    }
+
+    IEnumerable<Models.Tweet>
+        FilterTweetsBySelectedTags()
+    {
+        var filteredTweets = _tweets;
+        var minSearchTermLength = 2;
+
+        if (!string.IsNullOrWhiteSpace(_searchTerm) && (_searchTerm.Length > minSearchTermLength))
+        {
+            filteredTweets = filteredTweets.Where(t => t.Text.Contains(_searchTerm, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        if (_selectedHashTags.Count > 0)
+        {
+            filteredTweets = filteredTweets.Where(t => t.HashTags.Intersect(_selectedHashTags).Any());
+        }
+
+        if (_selectedLanguages.Count > 0)
+        {
+            filteredTweets = filteredTweets.Where(t => _selectedLanguages.Contains(Models.Tweet.Languages[t.Language]));
+        }
+
+        return filteredTweets;
     }
 
     void HandleSelectedTagsChange(string tag)
     {
-        if (SelectedHashTags.Count > 0)
-        {
-            _filteredTweets = new List<Models.Tweet>
-                (_tweets.Where(t => t.HashTags.Intersect(SelectedHashTags).Any()));
-        }
-        else
-        {
-            _filteredTweets = new List<Models.Tweet>
-                (_tweets);
-        }
+        _filteredTweets = FilterTweetsBySelectedTags().ToList();
     }
 
     IList<string>
-        SelectedLanguages = new List<string>
+        _selectedLanguages = new List<string>
             ();
 
     void HandleCreateLanguageTag(string tag)
     {
-        SelectedLanguages.Add(tag);
+        _selectedLanguages.Add(tag);
     }
-
-    void HandleSelectedLanguagesChange(string tag)
-    {
-        if (SelectedLanguages.Count > 0)
-        {
-            _filteredTweets = new List<Models.Tweet>
-                (_tweets.Where(t => SelectedLanguages.Contains(Models.Tweet.Languages[t.Language])));
-        }
-        else
-        {
-            _filteredTweets = new List<Models.Tweet>
-                (_tweets);
-        }
-    }
-
 }
