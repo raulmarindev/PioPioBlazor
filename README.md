@@ -185,5 +185,5 @@ Project Link: [https://github.com/raulmarindev/PioPioBlazor](https://github.com/
 [license-shield]: https://img.shields.io/github/license/raulmarindev/PioPioBlazor.svg?style=flat-square
 [license-url]: https://github.com/raulmarindev/PioPioBlazor/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/othneildrew
+[linkedin-url]: https://linkedin.com/in/raulmarindev
 [product-screenshot]: images/screenshot.png
