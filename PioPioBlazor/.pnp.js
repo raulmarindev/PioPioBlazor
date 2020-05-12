@@ -67,11 +67,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
       ],
       [
         "tailwindcss",
-        "npm:1.4.0"
+        "npm:1.4.6"
       ],
       [
         "webpack",
-        "npm:5.0.0-beta.15"
+        "npm:5.0.0-beta.16"
       ],
       [
         "webpack-cli",
@@ -94,8 +94,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["postcss-import", "npm:12.0.1"],
             ["postcss-loader", "npm:3.0.0"],
             ["postcss-preset-env", "npm:6.7.0"],
-            ["tailwindcss", "npm:1.4.0"],
-            ["webpack", "npm:5.0.0-beta.15"],
+            ["tailwindcss", "npm:1.4.6"],
+            ["webpack", "npm:5.0.0-beta.16"],
             ["webpack-cli", "virtual:9211c55a6b97e66fd4343dc7359096bc5174258c335d4230fac8a5acb702afc500ce7b5631c808b7f368a624e1124b066ed93dd3818cdb52f37cc57db97ce9ef#npm:3.3.11"]
           ],
           "linkType": "SOFT",
@@ -1101,7 +1101,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["postcss-value-parser", "npm:4.1.0"],
             ["schema-utils", "npm:2.6.6"],
             ["semver", "npm:6.3.0"],
-            ["webpack", "npm:5.0.0-beta.15"]
+            ["webpack", "npm:5.0.0-beta.16"]
           ],
           "packagePeers": [
             "webpack"
@@ -2954,7 +2954,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["loader-utils", "npm:1.4.0"],
             ["normalize-url", "npm:1.9.1"],
             ["schema-utils", "npm:1.0.0"],
-            ["webpack", "npm:5.0.0-beta.15"],
+            ["webpack", "npm:5.0.0-beta.16"],
             ["webpack-sources", "npm:1.4.3"]
           ],
           "packagePeers": [
@@ -3519,8 +3519,8 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["postcss-import", "npm:12.0.1"],
             ["postcss-loader", "npm:3.0.0"],
             ["postcss-preset-env", "npm:6.7.0"],
-            ["tailwindcss", "npm:1.4.0"],
-            ["webpack", "npm:5.0.0-beta.15"],
+            ["tailwindcss", "npm:1.4.6"],
+            ["webpack", "npm:5.0.0-beta.16"],
             ["webpack-cli", "virtual:9211c55a6b97e66fd4343dc7359096bc5174258c335d4230fac8a5acb702afc500ce7b5631c808b7f368a624e1124b066ed93dd3818cdb52f37cc57db97ce9ef#npm:3.3.11"]
           ],
           "linkType": "SOFT",
@@ -5174,10 +5174,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["tailwindcss", [
-        ["npm:1.4.0", {
-          "packageLocation": "./.yarn/cache/tailwindcss-npm-1.4.0-13e0a902eb-2.zip/node_modules/tailwindcss/",
+        ["npm:1.4.6", {
+          "packageLocation": "./.yarn/cache/tailwindcss-npm-1.4.6-64507d972c-2.zip/node_modules/tailwindcss/",
           "packageDependencies": [
-            ["tailwindcss", "npm:1.4.0"],
+            ["tailwindcss", "npm:1.4.6"],
             ["@fullhuman/postcss-purgecss", "npm:2.1.2"],
             ["autoprefixer", "npm:9.7.6"],
             ["browserslist", "npm:4.12.0"],
@@ -5230,10 +5230,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["terser-webpack-plugin", [
-        ["virtual:d6d4f933f23c6aa8ea10462c6d68360192c944a32521fa6bf173f6f4b0e78ef67da6c45cd776644f685f120ec2bb722fad4f1680cbb595acecfc49656760daa1#npm:2.3.6", {
-          "packageLocation": "./.yarn/$$virtual/terser-webpack-plugin-virtual-2b23b5dfba/0/cache/terser-webpack-plugin-npm-2.3.6-ff003fc1a4-2.zip/node_modules/terser-webpack-plugin/",
+        ["virtual:c0692e8280933e39b096ce6da576b8bf3d420971d7916b8671b399e5fdbed4ae082e543b8ff3561ce7e51f17c1435e26025f8a6a799b952a424841288aad589b#npm:2.3.6", {
+          "packageLocation": "./.yarn/$$virtual/terser-webpack-plugin-virtual-77a3aeed3b/0/cache/terser-webpack-plugin-npm-2.3.6-ff003fc1a4-2.zip/node_modules/terser-webpack-plugin/",
           "packageDependencies": [
-            ["terser-webpack-plugin", "virtual:d6d4f933f23c6aa8ea10462c6d68360192c944a32521fa6bf173f6f4b0e78ef67da6c45cd776644f685f120ec2bb722fad4f1680cbb595acecfc49656760daa1#npm:2.3.6"],
+            ["terser-webpack-plugin", "virtual:c0692e8280933e39b096ce6da576b8bf3d420971d7916b8671b399e5fdbed4ae082e543b8ff3561ce7e51f17c1435e26025f8a6a799b952a424841288aad589b#npm:2.3.6"],
             ["cacache", "npm:13.0.1"],
             ["find-cache-dir", "npm:3.3.1"],
             ["jest-worker", "npm:25.5.0"],
@@ -5242,7 +5242,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["serialize-javascript", "npm:3.0.0"],
             ["source-map", "npm:0.6.1"],
             ["terser", "npm:4.6.12"],
-            ["webpack", "npm:5.0.0-beta.15"],
+            ["webpack", "npm:5.0.0-beta.16"],
             ["webpack-sources", "npm:1.4.3"]
           ],
           "packagePeers": [
@@ -5463,10 +5463,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]
       ]],
       ["webpack", [
-        ["npm:5.0.0-beta.15", {
-          "packageLocation": "./.yarn/cache/webpack-npm-5.0.0-beta.15-d6d4f933f2-2.zip/node_modules/webpack/",
+        ["npm:5.0.0-beta.16", {
+          "packageLocation": "./.yarn/cache/webpack-npm-5.0.0-beta.16-c0692e8280-2.zip/node_modules/webpack/",
           "packageDependencies": [
-            ["webpack", "npm:5.0.0-beta.15"],
+            ["webpack", "npm:5.0.0-beta.16"],
             ["@webassemblyjs/ast", "npm:1.9.0"],
             ["@webassemblyjs/helper-module-context", "npm:1.9.0"],
             ["@webassemblyjs/wasm-edit", "npm:1.9.0"],
@@ -5486,7 +5486,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["pkg-dir", "npm:4.2.0"],
             ["schema-utils", "npm:2.6.6"],
             ["tapable", "npm:2.0.0-beta.9"],
-            ["terser-webpack-plugin", "virtual:d6d4f933f23c6aa8ea10462c6d68360192c944a32521fa6bf173f6f4b0e78ef67da6c45cd776644f685f120ec2bb722fad4f1680cbb595acecfc49656760daa1#npm:2.3.6"],
+            ["terser-webpack-plugin", "virtual:c0692e8280933e39b096ce6da576b8bf3d420971d7916b8671b399e5fdbed4ae082e543b8ff3561ce7e51f17c1435e26025f8a6a799b952a424841288aad589b#npm:2.3.6"],
             ["watchpack", "npm:2.0.0-beta.13"],
             ["webpack-sources", "npm:2.0.0-beta.8"]
           ],
@@ -5508,7 +5508,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["loader-utils", "npm:1.2.3"],
             ["supports-color", "npm:6.1.0"],
             ["v8-compile-cache", "npm:2.0.3"],
-            ["webpack", "npm:5.0.0-beta.15"],
+            ["webpack", "npm:5.0.0-beta.16"],
             ["yargs", "npm:13.2.4"]
           ],
           "packagePeers": [
