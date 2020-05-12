@@ -1,51 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 
 namespace PioPioBlazor.Models
 {
     public class Tweet
     {
-        private static IDictionary<string, string> _languages;
+        private static readonly IDictionary<string, string> _languages;
 
         static Tweet()
         {
-            _languages = new Dictionary<string, string>
-            {
-                ["en"] = "English",
-                ["ar"] = "French",
-                ["bn"] = "Bengali",
-                ["cs"] = "Czech",
-                ["da"] = "Danish",
-                ["de"] = "German",
-                ["el"] = "Greek",
-                ["es"] = "Spanish",
-                ["fa"] = "Persian",
-                ["fi"] = "Finnish",
-                ["fil"] = "Filipino",
-                ["fr"] = "French",
-                ["he"] = "Hebrew",
-                ["hi"] = "Hindi",
-                ["hu"] = "Hungarian",
-                ["id"] = "Indonesian",
-                ["it"] = "Italian",
-                ["ja"] = "Japanese",
-                ["ko"] = "Korean",
-                ["msa"] = "Msa",
-                ["nl"] = "Dutch",
-                ["no"] = "Norwegian",
-                ["pl"] = "Polish",
-                ["pt"] = "Portuguese",
-                ["ro"] = "Romanian",
-                ["ru"] = "Russian",
-                ["sv"] = "Swedish",
-                ["th"] = "Thai",
-                ["tr"] = "Turkish",
-                ["uk"] = "Ukranian",
-                ["ur"] = "Urdu",
-                ["vi"] = "Vietnamese",
-                ["zh-cn"] = "Chinese",
-                ["und"] = "Unknown",
-            };
+            var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
+
+            _languages = cultures.Distinct(new CultureEqualityComparer())
+                .ToDictionary(c => c.TwoLetterISOLanguageName, c => c.EnglishName);
+            _languages.Add("und", "Undetermined");
         }
 
         public string Text { get; set; } = string.Empty;
