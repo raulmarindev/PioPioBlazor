@@ -4,7 +4,8 @@
     {
         public static readonly SearchBoxStyle TailwindCss = new SearchBoxStyle
         {
-            SearchBoxClass = "block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline mb-8",
+            SearchBoxClass =
+                "block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline mb-8"
         };
 
         public string SearchBoxClass { get; set; } = string.Empty;

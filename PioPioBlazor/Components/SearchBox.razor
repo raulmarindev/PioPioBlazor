@@ -1,23 +1,24 @@
-﻿@using Microsoft.JSInterop
-@using Microsoft.AspNetCore.Components.Web
+﻿@inject IJSRuntime JsRuntime
 
-@inject IJSRuntime JsRuntime
-
-<input class="@Style.SearchBoxClass" type="search" placeholder="@Placeholder" @oninput="(ChangeEventArgs args) => ChangeSearchTearm(args.Value.ToString())" />
+<input class="@Style.SearchBoxClass" type="search" placeholder="@Placeholder" @oninput="args => ChangeSearchTerm(args.Value.ToString())" />
 
 @code {
 
-    [Parameter] public string Placeholder { get; set; }
-    [Parameter] public string SearchTerm { get; set; }
+    [Parameter]
+    public string Placeholder { get; set; }
 
-    [Parameter] public EventCallback<string> SearchTermChanged { get; set; }
+    [Parameter]
+    public string SearchTerm { get; set; }
 
-    [Parameter] public SearchBoxStyle Style { get; set; } = SearchBoxStyle.TailwindCss;
+    [Parameter]
+    public EventCallback<string> SearchTermChanged { get; set; }
 
-    private string _filterText;
+    [Parameter]
+    public SearchBoxStyle Style { get; set; } = SearchBoxStyle.TailwindCss;
 
-    private void ChangeSearchTearm(string newSearchTerm)
+    private void ChangeSearchTerm(string newSearchTerm)
     {
         SearchTermChanged.InvokeAsync(newSearchTerm);
     }
+
 }

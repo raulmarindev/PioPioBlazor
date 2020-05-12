@@ -1,19 +1,20 @@
 ﻿@page "/"
-
+@using TweetModel = PioPioBlazor.Models.Tweet
 @using PioPioBlazor.Services
-@using TweetModel = Models.Tweet
 @inject TwitterService TwitterService
 
 @if (_tweets == null)
 {
     <div class="lds-facebook mx-auto">
-        <div class="bg-blue-400"></div><div class="bg-blue-400"></div><div class="bg-blue-400"></div>
+        <div class="bg-blue-400"></div>
+        <div class="bg-blue-400"></div>
+        <div class="bg-blue-400"></div>
     </div>
 }
-else if (_tweets.Count() == 0)
+else if (!_tweets.Any())
 {
     <h2 class="mb-10">You have reached the Twitter request limit. Please, try again in 10 - 15 minutes.</h2>
-    <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => {_retry = true;}">
+    <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => { _retry = true; }">
         Try Again
     </button>
 }
@@ -22,20 +23,22 @@ else
     <div class="md:flex md:justify-between">
         <TagSelector TItem="string"
                      SelectableTags="_hashTags"
-                     @bind-SelectedTags="_selectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                     @bind-SelectedTags="_selectedHashTags" Filter="@((item, term) => item.ToLower().Contains(term.ToLower()))"
                      Placeholder="Filter by hashtag..."
                      OnCreateTag="HandleCreateTag"
                      OnTagSelected="HandleSelectedTagsChange"
                      OnTagRemoved="HandleSelectedTagsChange">
+            <TagTemplate>@context</TagTemplate>
         </TagSelector>
 
         <TagSelector TItem="string"
                      SelectableTags="_languages"
-                     @bind-SelectedTags="_selectedLanguages" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                     @bind-SelectedTags="_selectedLanguages" Filter="@((item, term) => item.ToLower().Contains(term.ToLower()))"
                      Placeholder="Filter by language..."
                      OnCreateTag="HandleCreateLanguageTag"
                      OnTagSelected="HandleSelectedTagsChange"
                      OnTagRemoved="HandleSelectedTagsChange">
+            <TagTemplate>@context</TagTemplate>
         </TagSelector>
     </div>
     <SearchBox Placeholder="Text search..." SearchTerm="_searchTerm" SearchTermChanged="HandleTextChange" />
@@ -50,7 +53,7 @@ else
 
     if (i < _filteredTweets.Count())
     {
-        <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => {_numberOfTweetsShown += 10;}">
+        <button class="bg-blue-400 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" @onclick="() => { _numberOfTweetsShown += 10; }">
             Load More Tweets
         </button>
     }
@@ -58,17 +61,22 @@ else
 
 @code {
     private int _numberOfTweetsShown = 10;
-    private bool _retry = false;
-    private IEnumerable<Models.Tweet>
+    private bool _retry;
+
+    private IEnumerable<TweetModel>
     _tweets;
-    private List<Models.Tweet>
-        _filteredTweets;
+
+    private List<TweetModel>
+    _filteredTweets;
+
     private IEnumerable<string>
-        _hashTags;
+    _hashTags;
+
     private IEnumerable<string>
-        _languages;
+    _languages;
+
     private string _searchTerm;
-    private IDictionary<string, string> _languagesDict;
+    private readonly IDictionary<string, string> _languagesDict;
 
     public Index()
     {
@@ -85,9 +93,9 @@ else
             _filteredTweets = _tweets.ToList();
             if (_filteredTweets.Any())
             {
-                _hashTags = _tweets.SelectMany(t => t.HashTags).Distinct().OrderBy(t => t);
+                _hashTags = _filteredTweets.SelectMany(t => t.HashTags).Distinct().OrderBy(t => t);
 
-                var languageCodes = _tweets.Select(t => t.Language).Distinct();
+                var languageCodes = _filteredTweets.Select(t => t.Language).Distinct();
 
                 _languages = languageCodes.Select(t => _languagesDict.ContainsKey(t) ? _languagesDict[t] : _languagesDict["und"]).Distinct().OrderBy(t => t);
             }
@@ -97,8 +105,9 @@ else
     }
 
     private IList<string>
-        _selectedHashTags = new List<string>
-            ();
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    _selectedHashTags = new List<string>
+        ();
 
     void HandleCreateTag(string tag)
     {
@@ -111,23 +120,23 @@ else
         _filteredTweets = FilterTweetsBySelectedTags().ToList();
     }
 
-    IEnumerable<Models.Tweet>
+    IEnumerable<TweetModel>
         FilterTweetsBySelectedTags()
     {
         var filteredTweets = _tweets;
-        var minSearchTermLength = 2;
+        const int minSearchTermLength = 2;
 
-        if (!string.IsNullOrWhiteSpace(_searchTerm) && (_searchTerm.Length > minSearchTermLength))
+        if (!string.IsNullOrWhiteSpace(_searchTerm) && _searchTerm.Length > minSearchTermLength)
         {
             filteredTweets = filteredTweets.Where(t => t.Text.Contains(_searchTerm, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        if (_selectedHashTags.Count > 0)
+        if (_selectedHashTags.Any())
         {
             filteredTweets = filteredTweets.Where(t => t.HashTags.Intersect(_selectedHashTags).Any());
         }
 
-        if (_selectedLanguages.Count > 0)
+        if (_selectedLanguages.Any())
         {
             filteredTweets = filteredTweets.Where(t => _selectedLanguages.Contains(_languagesDict[t.Language]));
         }
@@ -140,12 +149,14 @@ else
         _filteredTweets = FilterTweetsBySelectedTags().ToList();
     }
 
-    IList<string>
-        _selectedLanguages = new List<string>
-            ();
+    private IList<string>
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
+    _selectedLanguages = new List<string>
+        ();
 
     void HandleCreateLanguageTag(string tag)
     {
         _selectedLanguages.Add(tag);
     }
+
 }

@@ -1,5 +1,5 @@
 ﻿const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const Path = require('path');
+const path = require('path');
 
 module.exports = {
     mode: 'development',
@@ -9,7 +9,7 @@ module.exports = {
     },
     output: {
         filename: '[name].js',
-        path: Path.resolve(__dirname, 'wwwroot'),
+        path: path.resolve(__dirname, 'wwwroot'),
     },
     module: {
         rules: [

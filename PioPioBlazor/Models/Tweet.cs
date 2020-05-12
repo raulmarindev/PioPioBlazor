@@ -42,15 +42,6 @@ namespace PioPioBlazor.Models
 
         public string Language { get; set; }
 
-        public static IDictionary<string, string> Languages
-        {
-            get
-            {
-                return _languages;
-            }
-            private set
-            {
-            }
-        }
+        public static IDictionary<string, string> Languages => _languages;
     }
 }

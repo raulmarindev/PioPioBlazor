@@ -8,7 +8,7 @@ namespace PioPioBlazor.Models
     {
         public bool Equals([AllowNull] CultureInfo x, [AllowNull] CultureInfo y)
         {
-            return x.TwoLetterISOLanguageName == y.TwoLetterISOLanguageName;
+            return x?.TwoLetterISOLanguageName == y?.TwoLetterISOLanguageName;
         }
 
         public int GetHashCode([DisallowNull] CultureInfo obj)

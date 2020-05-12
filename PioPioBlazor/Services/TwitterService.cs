@@ -14,11 +14,11 @@ namespace PioPioBlazor.Services
 {
     public class TwitterService
     {
-        private const int _tweetTextMaxLength = 100;
+        private const int TweetTextMaxLength = 100;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
         private readonly TwitterContext _twitterContext;
-        private Guid _userId = Guid.NewGuid();
+        private readonly Guid _userId = Guid.NewGuid();
 
         public TwitterService(IConfiguration configuration, IMemoryCache memoryCache)
         {
@@ -31,7 +31,7 @@ namespace PioPioBlazor.Services
         {
             return new MvcAuthorizer
             {
-                CredentialStore = new InMemoryCredentialStore()
+                CredentialStore = new InMemoryCredentialStore
                 {
                     ConsumerKey = _configuration["Twitter_ConsumerKey"],
                     ConsumerSecret = _configuration["Twitter_ConsumerSecret"],
@@ -43,12 +43,9 @@ namespace PioPioBlazor.Services
 
         public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets(bool forceFetch = false)
         {
-            if (forceFetch)
-            {
-                _memoryCache.Remove(_userId);
-            }
+            if (forceFetch) _memoryCache.Remove(_userId);
 
-            return await _memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(_userId, async e =>
+            return await _memoryCache.GetOrCreateAsync(_userId, async e =>
             {
                 e.SetOptions(new MemoryCacheEntryOptions
                 {
@@ -61,30 +58,30 @@ namespace PioPioBlazor.Services
 
         private async Task<IEnumerable<Tweet>> FetchHomeTimelineTweets()
         {
-            const int MaxTotalResults = 800;
+            const int maxTotalResults = 20;
 
             // sinceID is the oldest id you already have for this search term
             // CurrentMaxId is used after the first query to track current session
-            ulong? currentMaxID = null, previousMaxID = ulong.MaxValue;
+            ulong? currentMaxId = null, previousMaxId = ulong.MaxValue;
             var partialStatuses = new List<Status>();
             var combinedStatuses = new List<Status>();
-            int retrievedTweetsCount = 0;
+            var retrievedTweetsCount = 0;
 
             do
             {
                 try
                 {
                     partialStatuses = await _twitterContext.Status
-                    .Where(FilterStatuses(currentMaxID))
-                    .ToListAsync();
+                        .Where(FilterStatuses(currentMaxId))
+                        .ToListAsync();
 
                     // one less than the newest id you've just queried
-                    currentMaxID = partialStatuses.Min(status => status.StatusID) - 1;
+                    currentMaxId = partialStatuses.Min(status => status.StatusID) - 1;
 
-                    Debug.Assert(currentMaxID < previousMaxID);
+                    Debug.Assert(currentMaxId < previousMaxId);
 
-                    previousMaxID = currentMaxID;
-                    retrievedTweetsCount += partialStatuses.Count();
+                    previousMaxId = currentMaxId;
+                    retrievedTweetsCount += partialStatuses.Count;
 
                     combinedStatuses.AddRange(partialStatuses);
                 }
@@ -92,7 +89,7 @@ namespace PioPioBlazor.Services
                 {
                     Console.WriteLine(ex.Message);
                 }
-            } while (partialStatuses.Any() && (retrievedTweetsCount < MaxTotalResults));
+            } while (partialStatuses.Any() && retrievedTweetsCount < maxTotalResults);
 
             return MapStatusesToTweets(combinedStatuses);
         }
@@ -100,57 +97,56 @@ namespace PioPioBlazor.Services
         private static IEnumerable<Tweet> MapStatusesToTweets(List<Status> combinedTweets)
         {
             return combinedTweets
-                        .OrderByDescending(s => s.FavoriteCount)
-                        .Select(s =>
-                        {
-                            var mediaEntities = s.Entities.MediaEntities;
-                            var hashTagEntities = s.Entities.HashTagEntities;
-                            var hashTags = new List<string>();
-                            if (hashTagEntities != null && hashTagEntities.Any())
-                            {
-                                hashTags.AddRange(hashTagEntities.Select(e => $"#{e.Text}"));
-                            }
-                            var userProfileImageUrl = s.User.ProfileImageUrl.Replace("http:", "https:");
+                .OrderByDescending(s => s.FavoriteCount)
+                .Select(s =>
+                {
+                    var mediaEntities = s.Entities.MediaEntities;
+                    var hashTagEntities = s.Entities.HashTagEntities;
+                    var hashTags = new List<string>();
+                    if (hashTagEntities != null && hashTagEntities.Any())
+                        hashTags.AddRange(hashTagEntities.Select(e => $"#{e.Text}"));
+                    var userProfileImageUrl = s.User.ProfileImageUrl.Replace("http:", "https:");
 
-                            return new Tweet
-                            {
-                                CreatedAt = s.CreatedAt,
-                                FavoriteCount = s.FavoriteCount,
-                                HashTags = hashTags,
-                                ImageAlt = mediaEntities.Any() ? mediaEntities[0].AltText : string.Empty,
-                                ImageUrl = mediaEntities.Any() ? mediaEntities[0].MediaUrl.Replace("http:", "https:") : userProfileImageUrl,
-                                Language = s.Lang.ToLower(),
-                                RetweetCount = s.RetweetCount,
-                                Text = $"{s.Text.Substring(0, Math.Min(_tweetTextMaxLength, s.Text.Length))}{(s.Text.Length > _tweetTextMaxLength ? "..." : string.Empty)}",
-                                Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
-                                UserProfileImageUrl = userProfileImageUrl,
-                                UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}",
-                                UserScreenName = s.User.ScreenNameResponse,
-                            };
-                        });
+                    return new Tweet
+                    {
+                        CreatedAt = s.CreatedAt,
+                        FavoriteCount = s.FavoriteCount,
+                        HashTags = hashTags,
+                        ImageAlt = mediaEntities.Any() ? mediaEntities[0].AltText : string.Empty,
+                        ImageUrl = mediaEntities.Any()
+                            ? mediaEntities[0].MediaUrl.Replace("http:", "https:")
+                            : userProfileImageUrl,
+                        Language = s.Lang.ToLower(),
+                        RetweetCount = s.RetweetCount,
+                        Text =
+                            $"{s.Text.Substring(0, Math.Min(TweetTextMaxLength, s.Text.Length))}{(s.Text.Length > TweetTextMaxLength ? "..." : string.Empty)}",
+                        Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
+                        UserProfileImageUrl = userProfileImageUrl,
+                        UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}",
+                        UserScreenName = s.User.ScreenNameResponse
+                    };
+                });
         }
 
-        private static Expression<Func<Status, bool>> FilterStatuses(ulong? maxID)
+        private static Expression<Func<Status, bool>> FilterStatuses(ulong? maxId)
         {
-            const ulong SinceID = 1;
-            const int MaxTweetsToReturn = 200;
+            const ulong sinceId = 1;
+            const int maxTweetsToReturn = 200;
 
             var status = Expression.Parameter(typeof(Status), "status");
-            var expression = @$"status.Type == @0 &&
+            var expression = @"status.Type == @0 &&
                         status.Count == @1 &&
                         status.ExcludeReplies == false &&
                         status.TweetMode == @2 &&
                         status.SinceID == @3
 ";
 
-            if (maxID.HasValue)
-            {
-                expression += " && status.MaxID == @4";
-            }
+            if (maxId.HasValue) expression += " && status.MaxID == @4";
 
             return (Expression<Func<Status, bool>>)DynamicExpressionParser.ParseLambda(
-                new[] { status }, typeof(bool), expression, StatusType.Home, MaxTweetsToReturn, TweetMode.Compat, SinceID, maxID
-                );
+                new[] { status }, typeof(bool), expression, StatusType.Home, maxTweetsToReturn, TweetMode.Compat, sinceId,
+                maxId
+            );
         }
     }
 }

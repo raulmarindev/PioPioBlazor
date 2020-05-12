@@ -1,7 +1,4 @@
-﻿@using Microsoft.JSInterop
-@using Microsoft.AspNetCore.Components.Web
-
-@typeparam TItem
+﻿@typeparam TItem
 @inject IJSRuntime JsRuntime
 
 <div class="uic-tag-selector @Style.SelectorClass @(_selectionOpen ? "uic-tag-selector--open" : "")">
@@ -12,11 +9,13 @@
             {
                 <span class="@Style.SelectedTagClass" @onclick="@(() => RemoveSelectedTag(item))">
                     @TagTemplate(item)
-                    <span class="@Style.RemoveTagClass"><bold>X</bold></span>
+                    <span class="@Style.RemoveTagClass">
+                        <bold>X</bold>
+                    </span>
                 </span>
             }
         }
-        <input type="text" @onfocus="@OpenSelection" @onblur="@CloseSelection" @onkeyup="@OnTextKeypress" @ref="TextBox" placeholder="@Placeholder" />
+        <input type="text" @onfocus="@OpenSelection" @onblur="@CloseSelection" @onkeyup="@OnTextKeypress" @ref="_textBox" placeholder="@Placeholder" />
     </div>
 
     @if (_selectableItems.Any())
@@ -38,39 +37,43 @@
     [Parameter]
     public string Placeholder
     {
-        get
-        {
-            return (SelectedTags != null && SelectedTags.Any()) ? string.Empty : _placeholder;
-        }
-        set
-        {
-            _placeholder = value;
-        }
+        get => SelectedTags != null && SelectedTags.Any() ? string.Empty : _placeholder;
+        set => _placeholder = value;
     }
 
     private string _placeholder;
 
-    [Parameter] public IEnumerable<TItem> SelectableTags { get; set; }
+    [Parameter]
+    public IEnumerable<TItem> SelectableTags { get; set; }
 
-    [Parameter] public IList<TItem> SelectedTags { get; set; } = new List<TItem>();
-    [Parameter] public EventCallback<IList<TItem>> SelectedTagsChanged { get; set; }
+    [Parameter]
+    public IList<TItem> SelectedTags { get; set; } = new List<TItem>();
 
-    [Parameter] public TagSelectorStyle Style { get; set; } = TagSelectorStyle.TailwindCss;
+    [Parameter]
+    public EventCallback<IList<TItem>> SelectedTagsChanged { get; set; }
 
-    [Parameter] public RenderFragment<TItem> TagTemplate { get; set; }
+    [Parameter]
+    public TagSelectorStyle Style { get; set; } = TagSelectorStyle.TailwindCss;
 
-    [Parameter] public Func<TItem, string, bool> Filter { get; set; }
+    [Parameter]
+    public RenderFragment<TItem> TagTemplate { get; set; }
 
-    [Parameter] public EventCallback<TItem> OnTagSelected { get; set; }
+    [Parameter]
+    public Func<TItem, string, bool> Filter { get; set; }
 
-    [Parameter] public EventCallback<TItem> OnTagRemoved { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnTagSelected { get; set; }
 
-    [Parameter] public EventCallback<string> OnCreateTag { get; set; }
+    [Parameter]
+    public EventCallback<TItem> OnTagRemoved { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnCreateTag { get; set; }
 
     private bool _selectionOpen;
     private string _filterText;
-    private ElementReference TextBox;
-    private int _selectableIndex = 0;
+    private ElementReference _textBox;
+    private int _selectableIndex;
     private IList<TItem> _selectableItems = new List<TItem>();
 
     private void AddSelectedTag(TItem item, bool closeSelection)
@@ -105,7 +108,7 @@
     private void ResetFilterText()
     {
         _filterText = "";
-        JsRuntime.InvokeAsync<object>("tagSelectorComponent.setValue", TextBox, "");
+        JsRuntime.InvokeAsync<object>("tagSelectorComponent.setValue", _textBox, "");
     }
 
     private async Task OnTextKeypress(KeyboardEventArgs e)
@@ -137,11 +140,11 @@
                 break;
 
             case "Escape":
-                await JsRuntime.InvokeVoidAsync("tagSelectorComponent.blur", TextBox);
+                await JsRuntime.InvokeVoidAsync("tagSelectorComponent.blur", _textBox);
                 break;
 
             default:
-                _filterText = await JsRuntime.InvokeAsync<string>("tagSelectorComponent.getValue", TextBox);
+                _filterText = await JsRuntime.InvokeAsync<string>("tagSelectorComponent.getValue", _textBox);
                 UpdateSelectableItems();
                 break;
         }
