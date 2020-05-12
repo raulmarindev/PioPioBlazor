@@ -14,11 +14,11 @@ namespace PioPioBlazor.Services
 {
     public class TwitterService
     {
-        private const int TweetTextMaxLength = 100;
+        private const int _tweetTextMaxLength = 100;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
-        private TwitterContext _twitterContext;
-        private Guid UserId = Guid.NewGuid();
+        private readonly TwitterContext _twitterContext;
+        private Guid _userId = Guid.NewGuid();
 
         public TwitterService(IConfiguration configuration, IMemoryCache memoryCache)
         {
@@ -45,10 +45,10 @@ namespace PioPioBlazor.Services
         {
             if (forceFetch)
             {
-                _memoryCache.Remove(UserId);
+                _memoryCache.Remove(_userId);
             }
 
-            return await _memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(UserId, async e =>
+            return await _memoryCache.GetOrCreateAsync<IEnumerable<Tweet>>(_userId, async e =>
             {
                 e.SetOptions(new MemoryCacheEntryOptions
                 {
@@ -68,7 +68,6 @@ namespace PioPioBlazor.Services
             ulong? currentMaxID = null, previousMaxID = ulong.MaxValue;
             var partialStatuses = new List<Status>();
             var combinedStatuses = new List<Status>();
-            const int MinFavoriteCount = 20;
             int retrievedTweetsCount = 0;
 
             do
@@ -87,7 +86,7 @@ namespace PioPioBlazor.Services
                     previousMaxID = currentMaxID;
                     retrievedTweetsCount += partialStatuses.Count();
 
-                    combinedStatuses.AddRange(partialStatuses.Where(s => s.FavoriteCount > MinFavoriteCount));
+                    combinedStatuses.AddRange(partialStatuses);
                 }
                 catch (Exception ex)
                 {
@@ -122,7 +121,7 @@ namespace PioPioBlazor.Services
                                 ImageUrl = mediaEntities.Any() ? mediaEntities[0].MediaUrl.Replace("http:", "https:") : userProfileImageUrl,
                                 Language = s.Lang.ToLower(),
                                 RetweetCount = s.RetweetCount,
-                                Text = $"{s.Text.Substring(0, Math.Min(TweetTextMaxLength, s.Text.Length))}{(s.Text.Length > TweetTextMaxLength ? "..." : string.Empty)}",
+                                Text = $"{s.Text.Substring(0, Math.Min(_tweetTextMaxLength, s.Text.Length))}{(s.Text.Length > _tweetTextMaxLength ? "..." : string.Empty)}",
                                 Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
                                 UserProfileImageUrl = userProfileImageUrl,
                                 UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}",
