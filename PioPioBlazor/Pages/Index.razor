@@ -1,6 +1,7 @@
 ﻿@page "/"
 
 @using PioPioBlazor.Services
+@using TweetModel = Models.Tweet
 @inject TwitterService TwitterService
 
 @if (_tweets == null)
@@ -18,27 +19,26 @@ else if (_tweets.Count() == 0)
 }
 else
 {
-    <TagSelector TItem="string"
-                 SelectableTags="_hashTags"
-                 @bind-SelectedTags="_selectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
-                 Placeholder="Select hashtags to filter your tweets..."
-                 OnCreateTag="HandleCreateTag"
-                 OnTagSelected="HandleSelectedTagsChange"
-                 OnTagRemoved="HandleSelectedTagsChange">
-        <TagTemplate>@context</TagTemplate>
-    </TagSelector>
+    <div class="md:flex md:justify-between">
+        <TagSelector TItem="string"
+                     SelectableTags="_hashTags"
+                     @bind-SelectedTags="_selectedHashTags" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                     Placeholder="Filter by hashtag..."
+                     OnCreateTag="HandleCreateTag"
+                     OnTagSelected="HandleSelectedTagsChange"
+                     OnTagRemoved="HandleSelectedTagsChange">
+        </TagSelector>
 
-    <TagSelector TItem="string"
-                 SelectableTags="_languages"
-                 @bind-SelectedTags="_selectedLanguages" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
-                 Placeholder="Select languages to filter your tweets..."
-                 OnCreateTag="HandleCreateLanguageTag"
-                 OnTagSelected="HandleSelectedTagsChange"
-                 OnTagRemoved="HandleSelectedTagsChange">
-        <TagTemplate>@context</TagTemplate>
-    </TagSelector>
-
-    <SearchBox Placeholder="Search among your Home Timeline tweets..." SearchTerm="_searchTerm" SearchTermChanged="HandleTextChange" />
+        <TagSelector TItem="string"
+                     SelectableTags="_languages"
+                     @bind-SelectedTags="_selectedLanguages" Filter="@((item,term) => item.ToLower().Contains(term.ToLower()))"
+                     Placeholder="Filter by language..."
+                     OnCreateTag="HandleCreateLanguageTag"
+                     OnTagSelected="HandleSelectedTagsChange"
+                     OnTagRemoved="HandleSelectedTagsChange">
+        </TagSelector>
+    </div>
+    <SearchBox Placeholder="Text search..." SearchTerm="_searchTerm" SearchTermChanged="HandleTextChange" />
 
     <h2 class="mb-8">@_filteredTweets.Count() tweets retrieved</h2>
 
@@ -68,6 +68,12 @@ else
     private IEnumerable<string>
         _languages;
     private string _searchTerm;
+    private IDictionary<string, string> _languagesDict;
+
+    public Index()
+    {
+        _languagesDict = TweetModel.Languages;
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -76,10 +82,15 @@ else
             // When execution reaches this point, the first *interactive* render
             // is complete. The component has an active connection to the browser.
             _tweets = await TwitterService.GetHomeTimelineTweets(_retry);
-            _filteredTweets = new List<Models.Tweet>
-                (_tweets);
-            _hashTags = _tweets.SelectMany(t => t.HashTags).OrderBy(t => t);
-            _languages = _tweets.Select(t => Models.Tweet.Languages[t.Language]).OrderBy(t => t);
+            _filteredTweets = _tweets.ToList();
+            if (_filteredTweets.Any())
+            {
+                _hashTags = _tweets.SelectMany(t => t.HashTags).Distinct().OrderBy(t => t);
+
+                var languageCodes = _tweets.Select(t => t.Language).Distinct();
+
+                _languages = languageCodes.Select(t => _languagesDict.ContainsKey(t) ? _languagesDict[t] : _languagesDict["und"]).Distinct().OrderBy(t => t);
+            }
             _retry = false;
             StateHasChanged();
         }
@@ -118,7 +129,7 @@ else
 
         if (_selectedLanguages.Count > 0)
         {
-            filteredTweets = filteredTweets.Where(t => _selectedLanguages.Contains(Models.Tweet.Languages[t.Language]));
+            filteredTweets = filteredTweets.Where(t => _selectedLanguages.Contains(_languagesDict[t.Language]));
         }
 
         return filteredTweets;
