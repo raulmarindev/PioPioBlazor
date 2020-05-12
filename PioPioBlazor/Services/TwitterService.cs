@@ -58,7 +58,7 @@ namespace PioPioBlazor.Services
 
         private async Task<IEnumerable<Tweet>> FetchHomeTimelineTweets()
         {
-            const int maxTotalResults = 20;
+            const int maxTotalResults = 800;
 
             // sinceID is the oldest id you already have for this search term
             // CurrentMaxId is used after the first query to track current session
