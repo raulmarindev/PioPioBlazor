@@ -1,7 +1,9 @@
 ﻿@page "/"
 @using TweetModel = PioPioBlazor.Models.Tweet
 @using PioPioBlazor.Services
-@inject TwitterService TwitterService
+@using PioPioBlazor.Components
+@inject TwitterService _twitterService
+@inject Models.ILanguageDictionary _languagesDict
 
 @if (_tweets == null)
 {
@@ -76,28 +78,21 @@ else
     _languages;
 
     private string _searchTerm;
-    private readonly IDictionary<string, string> _languagesDict;
-
-    public Index()
-    {
-        _languagesDict = TweetModel.Languages;
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender || _retry)
         {
             // When execution reaches this point, the first *interactive* render
             // is complete. The component has an active connection to the browser.
-            _tweets = await TwitterService.GetHomeTimelineTweets(_retry);
+            _tweets = await _twitterService.GetHomeTimelineTweets(_retry);
             _filteredTweets = _tweets.ToList();
             if (_filteredTweets.Any())
             {
-                _hashTags = _filteredTweets.SelectMany(t => t.HashTags).Distinct().OrderBy(t => t);
+                _hashTags = _filteredTweets.SelectMany(t => t.HashTags).Select(t => t.ToLower()).Distinct().OrderBy(t => t);
 
                 var languageCodes = _filteredTweets.Select(t => t.Language).Distinct();
 
-                _languages = languageCodes.Select(t => _languagesDict.ContainsKey(t) ? _languagesDict[t] : _languagesDict["und"]).Distinct().OrderBy(t => t);
+                _languages = languageCodes.Select(t => _languagesDict[t]).Distinct().OrderBy(t => t);
             }
             _retry = false;
             StateHasChanged();
@@ -133,7 +128,7 @@ else
 
         if (_selectedHashTags.Any())
         {
-            filteredTweets = filteredTweets.Where(t => t.HashTags.Intersect(_selectedHashTags).Any());
+            filteredTweets = filteredTweets.Where(t => t.HashTags.Intersect(_selectedHashTags, new Models.HashtagEqualityComparer()).Any());
         }
 
         if (_selectedLanguages.Any())

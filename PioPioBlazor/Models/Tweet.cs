@@ -1,23 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace PioPioBlazor.Models
 {
     public class Tweet
     {
-        private static readonly IDictionary<string, string> _languages;
-
-        static Tweet()
-        {
-            var cultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-
-            _languages = cultures.Distinct(new CultureEqualityComparer())
-                .ToDictionary(c => c.TwoLetterISOLanguageName, c => c.EnglishName);
-            _languages.Add("und", "Undetermined");
-        }
-
         public string Text { get; set; } = string.Empty;
 
         public int? FavoriteCount { get; set; }
@@ -41,7 +28,5 @@ namespace PioPioBlazor.Models
         public IEnumerable<string> HashTags { get; set; }
 
         public string Language { get; set; }
-
-        public static IDictionary<string, string> Languages => _languages;
     }
 }
