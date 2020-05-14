@@ -1,6 +1,8 @@
 ﻿<div class="max-w-sm w-full lg:max-w-full lg:flex mb-8">
     <div class="h-40 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden border border-gray-400">
-        <img class="w-9/12 m-auto mt-6 rounded-sm" src="@State.ImageUrl" alt="@State.Text" />
+        <a href="@State.Url" target="_blank">
+            <img class="w-9/12 m-auto mt-6 rounded-sm" src="@State.ImageUrl" alt="@State.Text" />
+        </a>
     </div>
     <div class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full">
         <div class="mb-8">
@@ -21,7 +23,7 @@
             </p>
         </div>
         <div class="flex items-center">
-            <a href="@State.Url" target="_blank" class="text-blue-400 hover:text-blue-600">
+            <a href="@State.UserProfileUrl" target="_blank">
                 <img class="w-10 h-10 rounded-full mr-4" src="@State.UserProfileImageUrl" alt="Avatar of Jonathan Reinink">
             </a>
             <div class="text-sm">
@@ -35,7 +37,6 @@
 </div>
 
 @code {
-
     [Parameter]
     public Models.Tweet State { get; set; } = new Models.Tweet();
 
