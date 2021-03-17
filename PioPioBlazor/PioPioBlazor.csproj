@@ -2,11 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>68a59905-fdbf-43d0-aa39-2ef5bc7f0f9d</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="linqtotwitter" Version="5.1.2" />
-    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.1.0" />
+    <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.8" />
   </ItemGroup>
 
 </Project>
