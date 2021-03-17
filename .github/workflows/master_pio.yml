@@ -7,6 +7,7 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -18,7 +19,7 @@ jobs:
     - name: Set up .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: '3.1.201'
+        dotnet-version: '5.0.x'
 
     - name: Build with dotnet
       run: dotnet build --configuration Release
@@ -27,9 +28,9 @@ jobs:
       run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
 
     - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v1
+      uses: azure/webapps-deploy@v2
       with:
         app-name: 'pio'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_22390789b3b34910986342299010db58 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_35db2da20d3b481ead1d6c95ce0bba06 }}
         package: ${{env.DOTNET_ROOT}}/myapp 
