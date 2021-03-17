@@ -6,6 +6,8 @@ using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using LinqToTwitter;
+using LinqToTwitter.Common;
+using LinqToTwitter.OAuth;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using PioPioBlazor.Models;
@@ -41,7 +43,7 @@ namespace PioPioBlazor.Services
             };
         }
 
-        public async Task<IEnumerable<Tweet>> GetHomeTimelineTweets(bool forceFetch = false)
+        public async Task<IEnumerable<Models.Tweet>> GetHomeTimelineTweets(bool forceFetch = false)
         {
             if (forceFetch) _memoryCache.Remove(_userId);
 
@@ -56,7 +58,7 @@ namespace PioPioBlazor.Services
             });
         }
 
-        private async Task<IEnumerable<Tweet>> FetchHomeTimelineTweets()
+        private async Task<IEnumerable<Models.Tweet>> FetchHomeTimelineTweets()
         {
             const int maxTotalResults = 800;
 
@@ -94,7 +96,7 @@ namespace PioPioBlazor.Services
             return MapStatusesToTweets(combinedStatuses);
         }
 
-        private static IEnumerable<Tweet> MapStatusesToTweets(List<Status> combinedTweets)
+        private static IEnumerable<Models.Tweet> MapStatusesToTweets(List<Status> combinedTweets)
         {
             return combinedTweets
                 .OrderByDescending(s => s.FavoriteCount)
@@ -107,7 +109,7 @@ namespace PioPioBlazor.Services
                         hashTags.AddRange(hashTagEntities.Select(e => $"#{e.Text}"));
                     var userProfileImageUrl = s.User.ProfileImageUrl.Replace("http:", "https:");
 
-                    return new Tweet
+                    return new Models.Tweet
                     {
                         CreatedAt = s.CreatedAt,
                         FavoriteCount = s.FavoriteCount,
