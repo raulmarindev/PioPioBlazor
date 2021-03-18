@@ -26,13 +26,15 @@ module.exports = {
                     {
                         loader: 'postcss-loader',
                         options: {
-                            plugins: (loader) => [
-                                require('tailwindcss'),
-                                require('autoprefixer')({}),
-                                require('postcss-import')({ root: loader.resourcePath }),
-                                require('postcss-preset-env')(),
-                            ],
-                            minimize: false
+                            postcssOptions: {
+                                plugins: [
+                                    "tailwindcss",
+                                    "autoprefixer",
+                                    "postcss-import",
+                                    "postcss-preset-env"
+                                ],
+                                minimize: false
+                            }
                         },
                     }
                 ],

@@ -2,9 +2,7 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 @tailwind base;
-
 @tailwind components;
-
 @tailwind utilities;
 
 a.navbar-brand {

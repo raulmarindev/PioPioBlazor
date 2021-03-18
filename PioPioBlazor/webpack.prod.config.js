@@ -1,5 +1,5 @@
-﻿const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const path = require('path');
+﻿const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
     mode: 'development',
@@ -15,30 +15,7 @@ module.exports = {
         rules: [
             {
                 test: /\.css$/,
-                use: [
-                    MiniCssExtractPlugin.loader,
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            importLoaders: 1
-                        }
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            plugins: (loader) => [
-                                require('tailwindcss'),
-                                require('autoprefixer')({}),
-                                require('postcss-import')({ root: loader.resourcePath }),
-                                require('postcss-preset-env')(),
-                                require('cssnano')({
-                                    preset: 'default'
-                                })
-                            ],
-                            minimize: true
-                        },
-                    }
-                ],
+                use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"]
             },
         ],
     },

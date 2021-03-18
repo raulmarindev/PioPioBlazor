@@ -1,19 +1,19 @@
 {
-  "dependencies": {
-    "tailwindcss": "^1.9.6"
-  },
   "devDependencies": {
-    "autoprefixer": "^9.8.6",
-    "css-loader": "^3.6",
-    "cssnano": "^4.1.10",
-    "fs": "^0.0.1-security",
-    "mini-css-extract-plugin": "^0.12",
-    "on-build-webpack": "^0.1.0",
-    "postcss-import": "^12.0.1",
-    "postcss-loader": "^3.0.0",
-    "postcss-preset-env": "^6.7.0",
-    "webpack": "^5.25",
-    "webpack-cli": "^3.3.12"
+    "autoprefixer": "latest",
+    "css-loader": "latest",
+    "cssnano": "next",
+    "fs": "latest",
+    "mini-css-extract-plugin": "latest",
+    "on-build-webpack": "latest",
+    "postcss": "latest",
+    "postcss-import": "latest",
+    "postcss-loader": "latest",
+    "postcss-preset-env": "latest",
+    "style-loader": "latest",
+    "tailwindcss": "latest",
+    "webpack": "latest",
+    "webpack-cli": "latest"
   },
   "scripts": {
     "webpackdev": "webpack --config webpack.dev.config.js",
