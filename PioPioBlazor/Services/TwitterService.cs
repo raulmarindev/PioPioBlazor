@@ -16,7 +16,6 @@ namespace PioPioBlazor.Services
 {
     public class TwitterService
     {
-        private const int TweetTextMaxLength = 100;
         private readonly IConfiguration _configuration;
         private readonly IMemoryCache _memoryCache;
         private readonly TwitterContext _twitterContext;
@@ -117,11 +116,10 @@ namespace PioPioBlazor.Services
                         ImageAlt = mediaEntities.Any() ? mediaEntities[0].AltText : string.Empty,
                         ImageUrl = mediaEntities.Any()
                             ? mediaEntities[0].MediaUrl.Replace("http:", "https:")
-                            : userProfileImageUrl,
+                            : string.Empty,
                         Language = s.Lang.ToLower(),
                         RetweetCount = s.RetweetCount,
-                        Text =
-                            $"{s.Text.Substring(0, Math.Min(TweetTextMaxLength, s.Text.Length))}{(s.Text.Length > TweetTextMaxLength ? "..." : string.Empty)}",
+                        Text = s.Text,
                         Url = $"https://twitter.com/{s.User.ScreenNameResponse}/status/{s.StatusID}",
                         UserProfileImageUrl = userProfileImageUrl,
                         UserProfileUrl = $"https://twitter.com/{s.User.ScreenNameResponse}",

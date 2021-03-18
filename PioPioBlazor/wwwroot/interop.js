@@ -15,7 +15,7 @@
   \***********************/
 /***/ (() => {
 
-eval("﻿window.tagSelectorComponent = {\r\n    getValue: function (element) {\r\n        return element.value;\r\n    },\r\n    setValue: function (element, value) {\r\n        element.value = value;\r\n    },\r\n    blur: function (element) {\r\n        element.blur();\r\n    }\r\n};\n\n//# sourceURL=webpack://pio-pio/./js/interop.js?");
+eval("﻿window.clipboardCopy = {\r\n    copyText: function (text) {\r\n        navigator.clipboard.writeText(text).then(function () {\r\n            alert(\"Copied to clipboard!\");\r\n        })\r\n            .catch(function (error) {\r\n                alert(error);\r\n            });\r\n    }\r\n};\r\n\r\nwindow.tagSelectorComponent = {\r\n    getValue: function (element) {\r\n        return element.value;\r\n    },\r\n    setValue: function (element, value) {\r\n        element.value = value;\r\n    },\r\n    blur: function (element) {\r\n        element.blur();\r\n    }\r\n};\n\n//# sourceURL=webpack://pio-pio/./js/interop.js?");
 
 /***/ })
 

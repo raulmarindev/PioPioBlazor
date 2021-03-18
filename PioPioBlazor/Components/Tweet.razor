@@ -1,43 +1,95 @@
-﻿<div class="max-w-sm w-full lg:max-w-full lg:flex mb-8">
-    <div class="h-40 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden border border-gray-400">
-        <a href="@State.Url" target="_blank">
-            <img class="w-9/12 m-auto mt-6 rounded-sm" src="@State.ImageUrl" alt="@State.Text" />
-        </a>
-    </div>
-    <div class="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal w-full">
-        <div class="mb-8">
-            <div class="text-gray-900 font-bold text-xl mb-2">
-                <a href="@State.Url" target="_blank" class="text-blue-400 hover:text-blue-600">
-                    @State.Text
+﻿<div class="bg-white py-6 flex flex-col justify-center items-center">
+    <div class="w-full max-w-xl border border-gray-300 rounded-2xl py-3 px-5">
+        <div class="flex">
+            <div class="mr-2">
+                <a href="@State.UserProfileUrl" target="_blank">
+                    <img class="rounded-full" src="@State.UserProfileImageUrl" alt="Elon" />
                 </a>
             </div>
-            <p class="text-gray-700 text-base">
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline" height="12" viewBox="0 -91 512 512" width="12">
-                    <path d="m512 250.6-79.8 79.7-80.4-80 28.2-28.3 31.9 31.7v-193.6c0-5.3-2-10.2-5.7-14-3.8-3.8-8.8-5.9-14.1-5.9h-215.2l-40.1-40h255.4c16.1 0 31.2 6.3 42.5 17.7 11.3 11.3 17.4 26.4 17.3 42.4v193.9l31.9-31.8zm-184 39.4h-208c-5.4 0-10.4-2.1-14.1-5.9-3.7-3.7-5.8-8.7-5.7-14v-193.6l31.9 31.7 28.2-28.3-80.4-80-79.8 79.7 28.3 28.3 31.9-31.8v193.9c-0.1 16 6.1 31 17.3 42.4 11.3 11.4 26.4 17.7 42.5 17.7h255.4l-40.1-40zm0 0" />
+            <div>
+                <div class="flex space-x-1">
+                    <span class="font-bold">@State.UserScreenName</span>
+                    <span class="text-blue-500">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-label="Verified account">
+                            <g><path d="M22.5 12.5c0-1.58-.875-2.95-2.148-3.6.154-.435.238-.905.238-1.4 0-2.21-1.71-3.998-3.818-3.998-.47 0-.92.084-1.336.25C14.818 2.415 13.51 1.5 12 1.5s-2.816.917-3.437 2.25c-.415-.165-.866-.25-1.336-.25-2.11 0-3.818 1.79-3.818 4 0 .494.083.964.237 1.4-1.272.65-2.147 2.018-2.147 3.6 0 1.495.782 2.798 1.942 3.486-.02.17-.032.34-.032.514 0 2.21 1.708 4 3.818 4 .47 0 .92-.086 1.335-.25.62 1.334 1.926 2.25 3.437 2.25 1.512 0 2.818-.916 3.437-2.25.415.163.865.248 1.336.248 2.11 0 3.818-1.79 3.818-4 0-.174-.012-.344-.033-.513 1.158-.687 1.943-1.99 1.943-3.484zm-6.616-3.334l-4.334 6.5c-.145.217-.382.334-.625.334-.143 0-.288-.04-.416-.126l-.115-.094-2.415-2.415c-.293-.293-.293-.768 0-1.06s.768-.294 1.06 0l1.77 1.767 3.825-5.74c.23-.345.696-.436 1.04-.207.346.23.44.696.21 1.04z"></path></g>
+                        </svg>
+                    </span>
+                </div>
+                <div class="text-gray-500 leading-4">@State.UserScreenName</div>
+            </div>
+            <div class="text-blue-500 ml-auto">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6">
+                    <g>
+                        <path d="M23.643 4.937c-.835.37-1.732.62-2.675.733.962-.576 1.7-1.49 2.048-2.578-.9.534-1.897.922-2.958 1.13-.85-.904-2.06-1.47-3.4-1.47-2.572 0-4.658 2.086-4.658 4.66 0 .364.042.718.12 1.06-3.873-.195-7.304-2.05-9.602-4.868-.4.69-.63 1.49-.63 2.342 0 1.616.823 3.043 2.072 3.878-.764-.025-1.482-.234-2.11-.583v.06c0 2.257 1.605 4.14 3.737 4.568-.392.106-.803.162-1.227.162-.3 0-.593-.028-.877-.082.593 1.85 2.313 3.198 4.352 3.234-1.595 1.25-3.604 1.995-5.786 1.995-.376 0-.747-.022-1.112-.065 2.062 1.323 4.51 2.093 7.14 2.093 8.57 0 13.255-7.098 13.255-13.254 0-.2-.005-.402-.014-.602.91-.658 1.7-1.477 2.323-2.41z">
+                        </path>
+                    </g>
                 </svg>
-                @State.RetweetCount
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline" height="12" width="12" viewBox="0 0 512 512">
-                    <path d="M474.6 74.3C449.4 45.6 414.4 29.8 376 29.8c-53.9 0-88.1 32.2-107.3 59.3 -5 7-9.2 14-12.7 20.7 -3.5-6.6-7.8-13.7-12.7-20.7 -19.2-27-53.3-59.2-107.3-59.2 -38.4 0-73.4 15.8-98.6 44.4C13.3 101.6 0 138.2 0 177.4c0 42.6 16.6 82.2 52.3 124.7 31.9 38 77.8 77.1 131 122.4 19.8 16.9 40.3 34.3 62.1 53.4l0.7 0.6c2.8 2.5 6.4 3.7 9.9 3.7s7.1-1.2 9.9-3.7l0.7-0.6c21.8-19.1 42.3-36.5 62.1-53.4 53.2-45.3 99.1-84.4 131-122.4C495.4 259.6 512 220 512 177.4 512 138.2 498.7 101.6 474.6 74.3zM309.2 401.6c-17.1 14.6-34.7 29.5-53.2 45.6 -18.5-16.1-36.1-31.1-53.2-45.6C98.7 312.9 30 254.4 30 177.4c0-31.8 10.6-61.4 29.9-83.2C79.3 72 106.4 59.8 136 59.8c41.1 0 67.7 25.3 82.8 46.6 13.5 19.1 20.6 38.3 23 45.7 2 6.2 7.8 10.4 14.3 10.4 6.5 0 12.3-4.2 14.3-10.4 2.4-7.4 9.5-26.6 23-45.7 15.1-21.3 41.6-46.6 82.8-46.6 29.6 0 56.7 12.2 76.1 34.3C471.4 116 482 145.5 482 177.4 482 254.4 413.3 312.9 309.2 401.6z" />
-                </svg>
-                @State.FavoriteCount
-            </p>
+            </div>
         </div>
-        <div class="flex items-center">
-            <a href="@State.UserProfileUrl" target="_blank">
-                <img class="w-10 h-10 rounded-full mr-4" src="@State.UserProfileImageUrl" alt="Avatar of Jonathan Reinink">
+        <div class="py-3">
+            <a href="@State.Url" target="_blank">
+                <p class="text-lg">@State.Text</p>
+                <div class="flex">
+                    <p class="text-gray-500 pt-1">@State.CreatedAt.ToLongDateString()</p>
+                    <svg class="w-6 h-6 ml-auto text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                        <g>
+                            <path d="M12 18.042c-.553 0-1-.447-1-1v-5.5c0-.553.447-1 1-1s1 .447 1 1v5.5c0 .553-.447 1-1 1z">
+                            </path>
+                            <circle cx="12" cy="8.042" r="1.25"></circle>
+                            <path d="M12 22.75C6.072 22.75 1.25 17.928 1.25 12S6.072 1.25 12 1.25 22.75 6.072 22.75 12 17.928 22.75 12 22.75zm0-20C6.9 2.75 2.75 6.9 2.75 12S6.9 21.25 12 21.25s9.25-4.15 9.25-9.25S17.1 2.75 12 2.75z">
+                            </path>
+                        </g>
+                    </svg>
+                </div>
             </a>
-            <div class="text-sm">
-                <p class="text-gray-900 leading-none">
-                    <a class="hover:text-blue-300" href="@State.UserProfileUrl" target="_blank">@State.UserScreenName</a>
-                </p>
-                <p class="text-gray-600">@State.CreatedAt.ToShortDateString()</p>
+        </div>
+        @if (State.ImageUrl.Length > 0)
+        {
+            <div class="h-40 pb-3 lg:h-auto lg:w-40 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden">
+                <a href="@State.Url" target="_blank">
+                    <img class="w-9/12 m-auto rounded-sm" src="@State.ImageUrl" alt="@State.Text" />
+                </a>
+            </div>
+        }
+
+        <div class="flex space-x-5 pt-3 text-gray-500 border-t border-gray-300">
+            <div class="flex space-x-2">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6" style="">
+                    <g>
+                        <path d="M12 21.638h-.014C9.403 21.59 1.95 14.856 1.95 8.478c0-3.064 2.525-5.754 5.403-5.754 2.29 0 3.83 1.58 4.646 2.73.814-1.148 2.354-2.73 4.645-2.73 2.88 0 5.404 2.69 5.404 5.755 0 6.376-7.454 13.11-10.037 13.157H12zM7.354 4.225c-2.08 0-3.903 1.988-3.903 4.255 0 5.74 7.034 11.596 8.55 11.658 1.518-.062 8.55-5.917 8.55-11.658 0-2.267-1.823-4.255-3.903-4.255-2.528 0-3.94 2.936-3.952 2.965-.23.562-1.156.562-1.387 0-.014-.03-1.425-2.965-3.954-2.965z">
+                        </path>
+                    </g>
+                </svg><span>@State.FavoriteCount</span>
+            </div>
+            <div class="flex space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 -91 512 512" fill="currentColor">
+                    <g><path d="m512 250.6-79.8 79.7-80.4-80 28.2-28.3 31.9 31.7v-193.6c0-5.3-2-10.2-5.7-14-3.8-3.8-8.8-5.9-14.1-5.9h-215.2l-40.1-40h255.4c16.1 0 31.2 6.3 42.5 17.7 11.3 11.3 17.4 26.4 17.3 42.4v193.9l31.9-31.8zm-184 39.4h-208c-5.4 0-10.4-2.1-14.1-5.9-3.7-3.7-5.8-8.7-5.7-14v-193.6l31.9 31.7 28.2-28.3-80.4-80-79.8 79.7 28.3 28.3 31.9-31.8v193.9c-0.1 16 6.1 31 17.3 42.4 11.3 11.4 26.4 17.7 42.5 17.7h255.4l-40.1-40zm0 0"></path></g>
+                </svg><span>
+                    @State.RetweetCount
+                </span>
+            </div>
+            <div class="flex space-x-2">
+                <svg viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6" style="">
+                    <g>
+                        <path d="M11.96 14.945c-.067 0-.136-.01-.203-.027-1.13-.318-2.097-.986-2.795-1.932-.832-1.125-1.176-2.508-.968-3.893s.942-2.605 2.068-3.438l3.53-2.608c2.322-1.716 5.61-1.224 7.33 1.1.83 1.127 1.175 2.51.967 3.895s-.943 2.605-2.07 3.438l-1.48 1.094c-.333.246-.804.175-1.05-.158-.246-.334-.176-.804.158-1.05l1.48-1.095c.803-.592 1.327-1.463 1.476-2.45.148-.988-.098-1.975-.69-2.778-1.225-1.656-3.572-2.01-5.23-.784l-3.53 2.608c-.802.593-1.326 1.464-1.475 2.45-.15.99.097 1.975.69 2.778.498.675 1.187 1.15 1.992 1.377.4.114.633.528.52.928-.092.33-.394.547-.722.547z">
+                        </path>
+                        <path d="M7.27 22.054c-1.61 0-3.197-.735-4.225-2.125-.832-1.127-1.176-2.51-.968-3.894s.943-2.605 2.07-3.438l1.478-1.094c.334-.245.805-.175 1.05.158s.177.804-.157 1.05l-1.48 1.095c-.803.593-1.326 1.464-1.475 2.45-.148.99.097 1.975.69 2.778 1.225 1.657 3.57 2.01 5.23.785l3.528-2.608c1.658-1.225 2.01-3.57.785-5.23-.498-.674-1.187-1.15-1.992-1.376-.4-.113-.633-.527-.52-.927.112-.4.528-.63.926-.522 1.13.318 2.096.986 2.794 1.932 1.717 2.324 1.224 5.612-1.1 7.33l-3.53 2.608c-.933.693-2.023 1.026-3.105 1.026z">
+                        </path>
+                    </g>
+                </svg><span class="cursor-pointer" @onclick="CopyTextToClipboard">Copy link to tweet</span>
             </div>
         </div>
     </div>
 </div>
 
+@inject IJSRuntime JS
+
 @code {
     [Parameter]
     public Models.Tweet State { get; set; } = new Models.Tweet();
 
+    private async Task CopyTextToClipboard()
+    {
+        await JS.InvokeVoidAsync("clipboardCopy.copyText", State.Url);
+    }
 }
